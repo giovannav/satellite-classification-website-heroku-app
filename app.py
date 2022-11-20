@@ -8,6 +8,7 @@ from flask_login import LoginManager, UserMixin
 from flask_session import Session
 from PIL import Image
 import numpy as np
+import cv2 as cv
 from processing import make_pred_good
 from processing import placeMaskOnImg
 import os
@@ -327,15 +328,13 @@ def index(id):
                     
                     name = current_time + str(image_path.split('/')[-1])
                     
-                    img = Image.open(img_path).convert("RGB")
-                    img = np.array(img)
-                    resize2 = img.resize((256, 256))
-
+                    img = cv.imread(img_path)
                     img1 = np.array(Image.open(img_path))[:, :, :3]
                     open_file = img1/255.0
                     
-                    resize = open_file.rezise((256, 256))
-                    
+                    resize = cv.resize(open_file, (256, 256))
+                    resize2 = cv.resize(img, (256, 256))
+                    resize2 = cv.cvtColor(resize2, cv.COLOR_BGR2RGB)
                     resized = Image.fromarray(resize2)
                     resized_save = os.path.join('static/resized', name)
                     resized.save(resized_save)
