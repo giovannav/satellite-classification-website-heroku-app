@@ -1,33 +1,13 @@
-import io
-import dominate
-from dominate.tags import *
 import smtplib
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from email import encoders
-from itsdangerous import URLSafeTimedSerializer
 
 sender = 'giovannafrederico60@gmail.com'
 
-
-def generate_page(token):
-
-    doc = dominate.document(title='My web page')
-
-    with doc:
-        with header():
-            h1('Solicitação de redefinicação de senha', cls='title-class')
-            
-        with div(cls='song-class'):
-            p(b('Token: '), token)
-
-    return doc
-
-
 def send_mail(receiver, token):
     recipients = list(receiver.split(','))
-    my_page = str(generate_page(token))
+    my_page = token
     msg = MIMEMultipart()
     msg['From'] = sender
     msg['To'] = ',' .join(recipients)

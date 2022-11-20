@@ -9,7 +9,6 @@ from flask_session import Session
 from PIL import Image
 import numpy as np
 import cv2 as cv
-import processing
 from processing import make_pred_good
 from processing import placeMaskOnImg
 import os
