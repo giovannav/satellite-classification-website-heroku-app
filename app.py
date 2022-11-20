@@ -257,6 +257,8 @@ def index(id):
                     return render_template('index.html', posts=posts)
                 
                 if file:
+                    if not (os.path.isdir('static/images/')):
+                        os.mkdir('static/images/')
                     file_name = str(file.filename)
                     extension = file_name.split('.')[-1]
                     
