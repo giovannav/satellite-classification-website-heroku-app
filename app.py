@@ -1,24 +1,18 @@
 import rasterio
 import rasterio.warp
 from rasterio.crs import CRS
-from rasterio.plot import show
 from area import area
 import uuid
-import unicodedata
 from flask import Flask, render_template, request, url_for, flash, redirect, session
-from flask_login import LoginManager, UserMixin, login_required, login_user, logout_user, current_user
+from flask_login import LoginManager, UserMixin
 from flask_session import Session
 from PIL import Image
 import numpy as np
 import cv2 as cv
 import processing
-import matplotlib.pyplot as plt
 from processing import make_pred_good
 from processing import placeMaskOnImg
 import os
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
-import io
 import glob
 import segmentation_models as sm
 from keras import backend as K

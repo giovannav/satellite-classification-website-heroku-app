@@ -1,14 +1,8 @@
 import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
-import tensorflow as tf
-from os import listdir
-import pandas as pd
-from tensorflow import keras
-from time import time
 from keras import backend as K
 import albumentations as A
-import segmentation_models as sm
 
 
 def modify_mask(mask):
