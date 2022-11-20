@@ -359,12 +359,12 @@ def index(id):
                     im = Image.fromarray((result * 255).astype(np.uint8))
                     result_save = os.path.join('static/predictions', name)    
                     im.save(result_save)
-                    try:
-                        dir = 'static/images'
-                        for f in os.listdir(dir):
-                            os.remove(os.path.join(dir, f))
-                    except:
-                        print("The system cannot find the file specified")
+                    # try:
+                    #     dir = 'static/images'
+                    #     for f in os.listdir(dir):
+                    #         os.remove(os.path.join(dir, f))
+                    # except:
+                    #     print("The system cannot find the file specified")
                         
                     conn = get_db_connection()
                     conn.execute('INSERT INTO image (image_name, description, image_path, mask_path, result_path, proper_area, date_upload, polygon, area, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
