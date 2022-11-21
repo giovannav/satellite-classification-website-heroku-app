@@ -381,11 +381,12 @@ def index(id):
                                 file_name.split('.')[0]+".jpg"
                             im.save(image_path)
 
-                        elif (extension == 'jpeg' or extension == "jpg" or extension == "png"):
+                        elif (extension == 'jpeg' or extension == "jpg" or extension == "png" or extension == 'JPEG' or extension == "JPG" or extension == "PNG"):
                             polygon = ''
                             area_m2 = ''
                             image_path = "static/images/" + file.filename
                             file.save(image_path)
+                            
                         else:
                             flash('Formato de imagem inválido.')
                             return render_template('index.html',
