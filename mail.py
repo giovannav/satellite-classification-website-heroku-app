@@ -4,6 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import dominate
 from dominate.tags import *
+import json
 
 sender = 'giovannafrederico60@gmail.com'
 
@@ -24,6 +25,10 @@ def generate_page(token):
 
 
 def send_mail(receiver, token):
+    
+    with open('credentials.json', 'r') as fcc_file:
+     credentials = json.load(fcc_file)
+    
     recipients = list(receiver.split(','))
     my_page = str(generate_page(token))
     msg = MIMEMultipart()
@@ -36,7 +41,7 @@ def send_mail(receiver, token):
         server = smtplib.SMTP('smtp.gmail.com:587')
         server.ehlo()
         server.starttls()
-        server.login(sender, 'nhsvkbflpzyksbvu')
+        server.login(sender, credentials['token'])
         server.sendmail(sender, recipients, msg)
         server.quit()
         print('Sent')
