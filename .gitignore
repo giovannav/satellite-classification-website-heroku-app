@@ -1,7 +1,6 @@
-# .gitignore
 env
 __pycache__
 flask_session
 *.sql
 dump.sql
-static/files/credentials.json
+static
