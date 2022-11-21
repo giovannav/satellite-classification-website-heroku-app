@@ -4,4 +4,4 @@ __pycache__
 flask_session
 *.sql
 dump.sql
-statis/files/crdentials.json
+static/files/credentials.json
