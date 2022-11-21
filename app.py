@@ -331,7 +331,7 @@ def index(id):
                         file_name = str(file.filename)
                         extension = file_name.split('.')[-1]
 
-                        if (extension == 'tif' or extension == "tiff"):
+                        if (extension == 'tif' or extension == "tiff" or extension == 'TIF' or extension == "TIFF"):
                             image_path = "static/images/" + file.filename
                             file.save(image_path)
 
