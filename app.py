@@ -147,21 +147,24 @@ def login():
         elif not password:
             flash('Preencha sua senha.')
         else:
-            conn = get_db_connection()
-            curs = conn.cursor()
-            curs.execute('SELECT * FROM user where email = (?)', [email])
-            user = list(curs.fetchone())
-            Us = load_user(user[0])
+            try:
+                conn = get_db_connection()
+                curs = conn.cursor()
+                curs.execute('SELECT * FROM user where email = (?)', [email])
+                user = list(curs.fetchone())
+                Us = load_user(user[0])
 
-            # un-hash password
-            password = str.encode(password)
-            hashed = str.encode(str(Us.password))
-            ##########################
+                # un-hash password
+                password = str.encode(password)
+                hashed = str.encode(str(Us.password))
+                ##########################
 
-            if (str(email) == str(Us.email) and bcrypt.checkpw(password, hashed)):
-                session['id'] = [str(Us.id)]
-                return redirect(url_for('index', id=Us.id))
-            else:
+                if (str(email) == str(Us.email) and bcrypt.checkpw(password, hashed)):
+                    session['id'] = [str(Us.id)]
+                    return redirect(url_for('index', id=Us.id))
+                else:
+                    flash('E-mail ou senha incorretos.')
+            except:
                 flash('E-mail ou senha incorretos.')
     return render_template('login.html')
 
