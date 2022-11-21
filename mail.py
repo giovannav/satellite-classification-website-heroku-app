@@ -26,7 +26,7 @@ def generate_page(token):
 
 def send_mail(receiver, token):
     
-    with open('credentials.json', 'r') as fcc_file:
+    with open('static/files/credentials.json', 'r') as fcc_file:
      credentials = json.load(fcc_file)
     
     recipients = list(receiver.split(','))
