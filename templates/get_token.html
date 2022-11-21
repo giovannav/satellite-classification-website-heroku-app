@@ -10,12 +10,39 @@
     <title>Recuperar senha</title>
     <style>
         body {
-            background-color: rgb(255, 255, 255);
+            background-color: #ecead0;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         }
     </style>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a style="margin: 1%;">SIPH</a>
+                <img src="/static/icons/logo.png" alt="Icon vermelho com o desenho de uma alcachofra." style="width: 5%; height: 5%; margin: 1%; padding: 0;">
+                <a class="nav-item nav-link active" href="/about">Sobre<span class="sr-only">(current)</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 mb-5 align-items-center" style="width: 100%;">
+        <div class="row">
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4 align-items-center ">
+                <img src="/static/icons/logo.png" style="width: 25%; margin-left: 25%;" alt=""><br><br><h5>Sistema de Identificação para Hortas</h5>
+            </div>
+            <div class="col-sm-4">
+            </div>
+            
+        </div>
+    </div>
     <section>
         <div class="container h-100 mt-5 mb-5">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -52,7 +79,7 @@
                                         {% endwith %}
                                         {% block body %}{% endblock %}                     
                                         <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                            <input type="submit" class="btn btn-primary btn" name="button" id="button" value="Recuperar senha" />
+                                            <input type="submit" class="btn btn-success btn" name="button" id="button" value="Recuperar senha" />
                                         </div>
 <!-- 
                                         <div class="d-flex flex-row align-items-center mb-4">
@@ -71,11 +98,6 @@
             </div>
         </div>
     </section>
-    <footer class="footer fixed-bottom" style="background-color: #282828;">
-        <div class="text-center p-3" style="background-color: #282828; color: azure;">
-            © 2022 Copyright:
-        </div>
-    </footer>
 </body>
 
 </html>

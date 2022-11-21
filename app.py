@@ -6,6 +6,7 @@ import uuid
 from flask import Flask, render_template, request, url_for, flash, redirect, session
 from flask_login import LoginManager, UserMixin
 from flask_session import Session
+from flask_paginate import Pagination, get_page_args
 from PIL import Image
 import numpy as np
 import cv2 as cv
@@ -83,11 +84,34 @@ def load_user(user_id):
    curs = conn.cursor()
    curs.execute("SELECT * from user where id = (?)", [user_id])
    lu = curs.fetchone()
-   print(lu)
    if lu is None:
         return None
    else:
         return User(lu[0], lu[1], lu[2], lu[3], lu[4])
+   
+def get_posts(id):
+    conn = get_db_connection()
+    posts = conn.execute('SELECT * FROM image where user_id = (?)', [id]).fetchall()    
+    conn.close()
+    return posts
+
+def get_posts_offset(id, offset=0, per_page=10):
+    conn = get_db_connection()
+    posts = conn.execute('SELECT * FROM image where user_id = (?)', [id]).fetchall()    
+    conn.close()
+    return posts[offset: offset+per_page]
+
+def get_posts_filter(id, query):
+    conn = get_db_connection()
+    posts = conn.execute(query, [id]).fetchall()
+    conn.close()
+    return posts
+
+def get_posts_filter_offset(id, query, offset=0, per_page=10):
+    conn = get_db_connection()
+    posts = conn.execute(query, [id]).fetchall()
+    conn.close()
+    return posts[offset: offset+per_page]
     
 @app.route("/")
 def home():
@@ -98,7 +122,6 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        print(email, password)
         if not email:
             flash('Preencha seu email.')
         elif not password:
@@ -108,7 +131,6 @@ def login():
             curs = conn.cursor()
             curs.execute('SELECT * FROM user where email = (?)', [email]) 
             user = list(curs.fetchone())
-            print(user[0])
             Us = load_user(user[0])
             
             # un-hash password
@@ -116,7 +138,6 @@ def login():
             hashed = str.encode(str(Us.password))
             ##########################
             
-            #if (str(email) == str(Us.email) and str(password) == str(Us.password)):
             if (str(email) == str(Us.email) and bcrypt.checkpw(password, hashed)):
                 session['id'] = [str(Us.id)]
                 return redirect(url_for('index', id=Us.id))
@@ -129,6 +150,11 @@ def logout():
    # remove the username from the session if it is there
    session.pop('id', None)
    return redirect(url_for('login'))
+
+@app.route('/about')
+def about():
+   # remove the username from the session if it is there
+   return render_template('about.html')
 
 @app.route("/get_token", methods=('GET', 'POST'))
 def get_token():
@@ -147,8 +173,7 @@ def get_token():
                 mail.send_mail(email, code)
                 flash('Novo token enviado.')
             else:
-                flash('E-mail não encontrado.')
-                       
+                flash('E-mail não encontrado.')                 
     return render_template('get_token.html')
     
 @app.route("/insert_token", methods=('GET', 'POST'))
@@ -183,11 +208,8 @@ def insert_token():
                     return redirect(url_for('login'))
                 else:
                     flash('Token inválido!')
-                    
-           
     return render_template('insert_token.html')
 
-    
 
 @app.route("/registration", methods=('GET', 'POST'))
 def registration():
@@ -235,6 +257,13 @@ def home2():
     
 @app.route("/index/<id>", methods=('GET', 'POST'))
 def index(id):
+    page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+    
+    total = len(get_posts(id))
+    pagination_users = get_posts_offset(id, offset=offset, per_page=per_page)
+    pagination = Pagination(page=page, per_page=per_page, total=total,
+                            css_framework='bootstrap4', show_single_page=True)
     
     if session.get("id"):
         session_id = session['id'][0]
@@ -242,11 +271,12 @@ def index(id):
         session_id = 0
         
     if id == session_id: 
-        conn = get_db_connection()
-        posts = conn.execute('SELECT * FROM image where user_id = (?)', [id]).fetchall()
-        conn.close()
         if request.method == 'GET':
-            return render_template('index.html', posts=posts)
+            return render_template('index.html', 
+                           posts=pagination_users,
+                           page=page,
+                           per_page=per_page,
+                           pagination=pagination)
         
         if request.method == 'POST':
             if request.form['button'] == "Carregar":
@@ -254,67 +284,85 @@ def index(id):
                 description = request.form['description']
                 
                 if not file or not description:
-                    return render_template('index.html', posts=posts)
-                
-                if file:
-                    if not (os.path.isdir('static/images/')):
-                        os.mkdir('static/images/')
-                    file_name = str(file.filename)
-                    extension = file_name.split('.')[-1]
+                     return render_template('index.html', 
+                           posts=pagination_users,
+                           page=page,
+                           per_page=per_page,
+                           pagination=pagination)
+                try:
+                    if file:
+                        if not (os.path.isdir('static/images/')):
+                            os.mkdir('static/images/')
+                        file_name = str(file.filename)
+                        extension = file_name.split('.')[-1]
+                        
+                        if (extension == 'tif' or extension == "tiff"):
+                            image_path = "static/images/" + file.filename
+                            file.save(image_path)
                     
-                    if (extension == 'tif' or extension == "tiff"):
-                        image_path = "static/images/" + file.filename
-                        file.save(image_path)
-                
-                        dat = rasterio.open(image_path)
-                        bounds = dat.bounds
-                        
-                        x_min, y_min, x_max, y_max = bounds
-                        feature = {
-                            "type": "Polygon",
-                            "coordinates": [
-                            [[x_max, y_min], 
-                                [x_max, y_max], 
-                                [x_min, y_max], 
-                                [x_min, y_min], 
-                                [x_max, y_min]]
-                            ]
-                        }
+                            dat = rasterio.open(image_path)
+                            bounds = dat.bounds
+                            
+                            x_min, y_min, x_max, y_max = bounds
+                            feature = {
+                                "type": "Polygon",
+                                "coordinates": [
+                                    [[x_max, y_min], 
+                                    [x_max, y_max], 
+                                    [x_min, y_max], 
+                                    [x_min, y_min], 
+                                    [x_max, y_min]]
+                                ]
+                            }
 
-                        feature_proj = rasterio.warp.transform_geom(
-                            dat.crs,
-                            CRS.from_epsg(4326),
-                            feature
-                        )
+                            feature_proj = rasterio.warp.transform_geom(
+                                dat.crs,
+                                CRS.from_epsg(4326),
+                                feature
+                            )
+                        
+                            #poligono e area
+                            polygon = str(feature_proj['coordinates'])
+                            obj = feature_proj
+                            area_m2 = str(area(obj))
+                            #####
+                            
+                            data = dat.read([1,2,3])
+                            def normalize(x, lower, upper):
+                                x_max = np.max(x)
+                                x_min = np.min(x)
+
+                                m = (upper - lower) / (x_max - x_min)
+                                x_norm = (m * (x - x_min)) + lower
+
+                                return x_norm
+
+                            # Normalize each band separately
+                            data_norm = np.array([normalize(data[i,:,:], 0, 255) for i in range(data.shape[0])])
+                            im = Image.fromarray(np.moveaxis(data, 0, -1))
+                            image_path = "static/images/"+file_name.split('.')[0]+".jpg"
+                            im.save(image_path)                        
+                            
+                        elif (extension == 'jpeg' or extension == "jpg" or extension == "png"):
+                            polygon = ''
+                            area_m2 = ''
+                            image_path = "static/images/" + file.filename
+                            file.save(image_path)
+                        else:
+                            flash('Formato de imagem inválido.')
+                            return render_template('index.html', 
+                            posts=pagination_users,
+                            page=page,
+                            per_page=per_page,
+                            pagination=pagination)
+                except:
+                    flash('Erro no arquivo.')
+                    return render_template('index.html', 
+                           posts=pagination_users,
+                           page=page,
+                           per_page=per_page,
+                           pagination=pagination)
                     
-                        #poligono e area
-                        polygon = str(feature_proj['coordinates'])
-                        obj = feature_proj
-                        area_m2 = str(area(obj))
-                        #####
-                        
-                        data = dat.read([1,2,3])
-                        def normalize(x, lower, upper):
-                            x_max = np.max(x)
-                            x_min = np.min(x)
-
-                            m = (upper - lower) / (x_max - x_min)
-                            x_norm = (m * (x - x_min)) + lower
-
-                            return x_norm
-
-                        # Normalize each band separately
-                        data_norm = np.array([normalize(data[i,:,:], 0, 255) for i in range(data.shape[0])])
-                        im = Image.fromarray(np.moveaxis(data, 0, -1))
-                        image_path = "static/images/"+file_name.split('.')[0]+".jpg"
-                        im.save(image_path)                        
-                        print('salvo como jpg')
-                        
-                    elif (extension == 'jpeg' or extension == "jpg" or extension == "png"):
-                        polygon = ''
-                        area_m2 = ''
-                        image_path = "static/images/" + file.filename
-                        file.save(image_path)
                 
                 images = []
                 
@@ -356,17 +404,10 @@ def index(id):
                     predicted_save = os.path.join('static/mask', name)
                     predicted.save(predicted_save)
                         
-                    print('previsao feita')
                     result = placeMaskOnImg(img[0], pred)
                     im = Image.fromarray((result * 255).astype(np.uint8))
                     result_save = os.path.join('static/predictions', name)    
                     im.save(result_save)
-                    # try:
-                    #     dir = 'static/images'
-                    #     for f in os.listdir(dir):
-                    #         os.remove(os.path.join(dir, f))
-                    # except:
-                    #     print("The system cannot find the file specified")
                         
                     conn = get_db_connection()
                     conn.execute('INSERT INTO image (image_name, description, image_path, mask_path, result_path, proper_area, date_upload, polygon, area, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
@@ -385,14 +426,21 @@ def index(id):
                 conn = get_db_connection()
                 conn.execute('DELETE FROM image where id = (?)', [id_])
                 conn.commit()
-                posts = conn.execute('SELECT * FROM image where user_id = (?)', [id]).fetchall()
-                conn.close()
-                return render_template('index.html', posts=posts)
+                posts = get_posts(id)
+                page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+                
+                total = len(get_posts(id))
+                pagination_users = get_posts_offset(id, offset=offset, per_page=per_page)
+                pagination = Pagination(page=page, per_page=per_page, total=total,
+                                        css_framework='bootstrap4', show_single_page=True)
+                
+                return render_template('index.html', posts=pagination_users,
+                           page=page,
+                           per_page=per_page,
+                           pagination=pagination)
                 
             elif request.form['button'] == "Pesquisar":
-                date_start = request.form['date_start']
-                date_end = request.form['date_end']
-                
                 select = request.form.get('comp_select')
                 if select == '1':
                     query = 'SELECT * FROM image where user_id = (?) and proper_area <= 25'
@@ -405,16 +453,18 @@ def index(id):
                 else:
                     query = 'SELECT * FROM image where user_id = (?)'
                 
-                conn = get_db_connection()
+                page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+                total = len(get_posts_filter(id, query))
+                pagination_users = get_posts_filter_offset(id, query, offset=offset, per_page=per_page)
+                pagination = Pagination(page=page, per_page=per_page, total=total,
+                            css_framework='bootstrap4', show_single_page=True)
                 
-                if date_start != '' and date_end != "":
-                    print(query + " and date_upload >= '"+str(date_start)+"' and date_upload <= '"+str(date_end)+"'")
-                    posts = conn.execute(query + " and date_upload >= '"+str(date_start)+"' and date_upload <= '"+str(date_end)+"'", [id]).fetchall()
-                else:
-                    posts = conn.execute(query, [id]).fetchall()
-                print(list(posts))
-                conn.close()
-                return render_template('index.html', posts=posts)
+                return render_template('index.html', 
+                           posts=pagination_users,
+                           page=page,
+                           per_page=per_page,
+                           pagination=pagination)
                 
             return redirect(url_for('predict', id=0))
     else:
@@ -423,7 +473,6 @@ def index(id):
 
 @app.route("/predict/<id>", methods=('GET', 'POST'))
 def predict(id):
-
     if request.method == 'GET':
         itens = []
         conn = get_db_connection()
@@ -434,9 +483,33 @@ def predict(id):
             polygon = polygon[2:-2]
             polygon = list(eval(polygon))
             res = [list(ele) for ele in polygon]
+            dict_coord = {'coord1':res[0][1], 'coord2':res[0][0]}
         else:
             res = ""
-                    
+            dict_coord = {'coord1':"", 'coord2':""}
+       
+        if len(str(images['area'])) > 0:
+            area_hectare = round(float(images['area']) / 10000, 2)
+            area_propria_hectare = round(area_hectare * (float(images['proper_area']) / 100), 2)
+        else:
+            area_hectare = "" 
+            area_propria_hectare = "" 
+            classificacao = ""
+        
+        if len(str(area_propria_hectare)) > 0:
+            if area_propria_hectare*10000 < 20:
+                classificacao = "Pequeno (menor que 20m²)"
+            elif area_propria_hectare*10000 >= 20 and area_propria_hectare*10000 < 50:
+                classificacao = "Médio (maior ou igual a 20m² e menor que 50m²)"
+            elif area_propria_hectare*10000 >= 50 and area_propria_hectare*10000 < 100:
+                classificacao = "Grande (maior ou igual a 50m² e menor que 100m²)"
+            elif area_propria_hectare*10000 > 100:
+                classificacao = "Muito grande (maior ou igual a 100m²)"
+            else:
+                classificacao = ""
+        
+        date_upload = datetime.strptime(images['date_upload'], '%Y-%m-%d')
+        
         dict_imgs = {
             "id" : images['id'],
             "image_name": images['image_name'],
@@ -445,23 +518,19 @@ def predict(id):
             "mask_path": images['mask_path'],
             "result_path": images['result_path'],
             "proper_area": images['proper_area'],
-            "date_upload": images['date_upload'],
-            "polygon": res,
-            "area": images['area'] ,
+            "date_upload": (str(date_upload.day) + "/" + str(date_upload.month) + "/" + str(date_upload.year)),
+            "polygon": dict_coord,
+            "area": images['area'],
+            "area_hectare": area_hectare,
+            "area_propria_hectare": area_propria_hectare,
+            "classificacao": classificacao,
             "user_id": images['user_id']
         }
 
         return render_template('predict.html', posts=dict_imgs)
-    
-    # elif request.method == 'POST':
-    #     conn = get_db_connection()
-    #     images = conn.execute('SELECT * FROM image where id = (?)', [id]).fetchone()
-    #     print(list(images))
-    #     conn.close()
-    #     return render_template('predict.html', posts=images)
 
 if __name__ == "__main__":
-    port = os.environ.get("PORT", 5000)
-    app.run(debug=False, host="0.0.0.0", port=port)
-    # app.debug = True
-    # app.run()
+    # port = os.environ.get("PORT", 5000)
+    # app.run(debug=False, host="0.0.0.0", port=port)
+    app.debug = True
+    app.run()

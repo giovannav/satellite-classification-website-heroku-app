@@ -8,14 +8,90 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Recuperar senha</title>
+    <script>
+        let password = false;
+
+        function ValidatePassword() {
+        const input = document.getElementById("new_password");
+        const text = document.getElementById("alert_password");
+        input.addEventListener('input', validPassword);
+        let regExpWeak = /[a-z]/;
+        let regExpMedium = /\d+/;
+        let regExpStrong = /.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/;
+        let min_week_password = 3;
+        let min_medium_password = 6;
+        let min_strong_password = 6;
+        function validPassword() {
+        let input_week = input.value.match(regExpWeak);
+        let input_medium = input.value.match(regExpMedium);
+        let input_strong = input.value.match(regExpStrong);
+        if (input.value) {
+            if (input.value.length <= min_week_password && (input_week || input_medium || input_strong)) {
+            text.textContent = "Senha fraca. Digite uma senha mais forte.";
+            }
+            if (input.value.length >= min_medium_password && ((input_week && input_medium) || (input_medium && input_strong) || (input_week && input_strong))) {
+            text.textContent = "Senha média. Digite uma senha mais forte.";
+            }
+            if (input.value.length >= min_strong_password && input_week && input_medium && input_strong) {
+            text.textContent = "Senha forte.";
+            password = true;
+            }
+            }
+        }
+    }
+
+    function checkTerms(){
+            ValidateAll();
+    }
+
+    function ValidateAll() {
+        if (terms === true){
+            if (password === true) {
+                alert('Senha atualizada.');
+                }    
+            }
+            else {
+                alert('Erro ao redefinir senha.');
+                document.getElementById("form1").reset();
+                location.reload();
+        }
+    }
+    </script>
     <style>
         body {
-            background-color: rgb(255, 255, 255);
+            background-color: #ecead0;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         }
     </style>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a style="margin: 1%;">SIPH</a>
+                <img src="/static/icons/logo.png" alt="Icon vermelho com o desenho de uma alcachofra." style="width: 5%; height: 5%; margin: 1%; padding: 0;">
+                <a class="nav-item nav-link active" href="/about">Sobre<span class="sr-only">(current)</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 mb-5 align-items-center" style="width: 100%;">
+        <div class="row">
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4 align-items-center ">
+                <img src="/static/icons/logo.png" class="img-fluid" style="width: 25%; margin-left: 25%;" alt=""><br><br><h5>Sistema de Identificação para Hortas</h5>
+            </div>
+            <div class="col-sm-4">
+            </div>
+            
+        </div>
+    </div>
     <section>
         <div class="container h-100 mt-5 mb-5">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -25,7 +101,7 @@
                             <div class="row justify-content-center">
                                 <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
                                     <p class="text-center h3 fw-bold mb-2 mx-1 mx-md-4 mt-4">Recuperar senha</p>
-                                    <form class="mx-1 mx-md-4" method="post" enctype="multipart/form-data">
+                                    <form class="mx-1 mx-md-4" id="form1" method="post" enctype="multipart/form-data">
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <div class="form-outline flex-fill mb-0">
                                                 <label class="form-label" for="email">Token recebido:</label>
@@ -36,17 +112,20 @@
                                             <div class="form-outline flex-fill mb-0">
                                                 <label class="form-label" for="new_password">Nova senha:</label>
                                                 <input type="password" id="new_password" name="new_password"
-                                                    class="form-control" />
+                                                    class="form-control" onkeydown="ValidatePassword()" />
+                                                <p id="alert_password"></p>
                                             </div>
                                         </div>
+
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <div class="form-outline flex-fill mb-0">
-                                                <label class="form-label" for="password">Confirmar senha:</label>
+                                                <label class="form-label" for="new_password">Confirme a senha:</label>
                                                 <input type="password" id="password" name="password"
-                                                    class="form-control" />
+                                                    class="form-control" onkeydown="ValidatePassword()" />
+                                                <p id="alert_password"></p>
                                             </div>
-                                           
                                         </div>
+                                        
                                         {% with messages = get_flashed_messages() %}
                                         {% if messages %}
                                         <div class=flashes>
@@ -59,8 +138,8 @@
                                         {% block body %}{% endblock %}
 
                                         <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
-                                            <input type="submit" class="btn btn-primary btn" name="button"
-                                                value="Redefinir senha" id="button" />
+                                            <input type="submit" class="btn btn-success btn" name="button"
+                                                value="Redefinir senha" onclick="checkTerms()" id="button" />
                                         </div>
                                         <!-- 
                                         <div class="d-flex flex-row align-items-center mb-4">
@@ -79,11 +158,6 @@
             </div>
         </div>
     </section>
-    <footer class="footer fixed-bottom" style="background-color: #282828;">
-        <div class="text-center p-3" style="background-color: #282828; color: azure;">
-            © 2022 Copyright:
-        </div>
-    </footer>
 </body>
 
 </html>
