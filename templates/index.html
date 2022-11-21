@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
 
 
-        <title>Index</title>
+    <title>Index</title>
     <style>
-         body {
+        body {
             background-color: #ecead0;
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         }
@@ -27,7 +27,8 @@
             border: none;
         }
 
-        td, th {
+        td,
+        th {
             align-items: center;
             text-align: center;
             vertical-align: center;
@@ -59,7 +60,7 @@
             color: #282828;
         }
 
-        .img-fluid{
+        .img-fluid {
             height: 80px;
             width: 80px;
         }
@@ -88,8 +89,10 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a style="margin: 1%;">SIPH</a>
-                <img src="/static/icons/logo.png" alt="Icon vermelho com o desenho de uma alcachofra." style="width: 5%; height: 5%; margin: 1%; padding: 0;">
+                <img src="/static/icons/logo.png" alt="Icon vermelho com o desenho de uma alcachofra."
+                    style="width: 5%; height: 5%; margin: 1%; padding: 0;">
                 <a class="nav-item nav-link active" href="/home2">Inicío<span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link active" href="/about">Sobre<span class="sr-only">(current)</span></a>
                 <a class="nav-item nav-link" href="/logout">Sair</a>
             </div>
         </div>
@@ -100,7 +103,8 @@
             <div class="col-sm-4">
             </div>
             <div class="col-sm-4 align-items-center ">
-                <img src="/static/icons/logo.png"  class="img-fluid" style="width: 25%; margin-left: 25%;" alt=""><br><br><h5>Sistema de Identificação para Hortas</h5>
+                <img src="/static/icons/logo.png" class="img-responsive center-block d-block mx-auto" style="width: 60px;" alt="Logo com fundo vermelho e o desenho de uma alcachofra em branco."><br>
+                <h5 class="text-center">Sistema de Identificação para Hortas</h5>
             </div>
             <div class="col-sm-4">
             </div>
@@ -113,28 +117,29 @@
                 <div class="card-body p-md-5">
                     <div class="container">
                         <div class="row">
-                            
+
                             <form class="p-3 text-center" id="form1" method="post" enctype="multipart/form-data">
                                 <h4>Carregar nova imagem</h4>
                                 <input class="form-control" type="file" name="file" id="file"
                                     accept=".jpg,.jpeg,.png,.tif,.tiff">
                                 <p>Formatos permitidos: .jpg, .jpeg, .png, .tiff e .tif</p>
                                 {% with messages = get_flashed_messages() %}
-                                        {% if messages %}
-                                        <div class=flashes>
-                                            {% for message in messages %}
-                                            <p>{{ message }}</p> 
-                                            {% endfor %}
-                                        </div>
+                                {% if messages %}
+                                <div class=flashes>
+                                    {% for message in messages %}
+                                    <p>{{ message }}</p>
+                                    {% endfor %}
+                                </div>
                                 {% endif %}
                                 {% endwith %}
                                 {% block body %}{% endblock %}
-                                <input class="form-control mt-5" style="height: 30%;" type="text" name="description" id="description" placeholder="Descrição">
+                                <input class="form-control mt-5" style="height: 30%;" type="text" name="description"
+                                    id="description" placeholder="Descrição">
 
                                 <p id="alert"></p>
 
-                                <input type="submit" class="btn btn-secondary btn-lg mt-2 mb-4" value="Carregar" name="button"
-                                    id="button" onclick="check_inputs()">
+                                <input type="submit" class="btn btn-secondary btn-lg mt-2 mb-4" value="Carregar"
+                                    name="button" id="button" onclick="check_inputs()">
                             </form>
                         </div>
                     </div>
@@ -143,7 +148,7 @@
         </div>
     </div>
 
-  
+
     <div class="container h-100">
         <div class="row d-flex justify-content-center vh-100">
             <div class="card text-black" style="width: 100%; border-radius: 25px;">
@@ -152,27 +157,27 @@
                         <div class="row">
                             <div class="col-sm-12 mt-2">
                                 <form class="mx-1 mx-md-4" method="post" enctype="multipart/form-data">
-                                <div class="row">
-                                    <div class="col-sm-4 mt-2 mb-4">
-                                        <label class="form-label" for="date_start">Filtrar por área</label>
-                                        <select class="form-control" id="comp_select" name="comp_select">
-                                            <option selected>Listar todos</option>
-                                            <option value="1">Até 25%</option>
-                                            <option value="2">25% - 50%</option>
-                                            <option value="3">50% - 75%</option>
-                                            <option value="4">75% - 100%</option>
-                                        </select>
-                                        
+                                    <div class="row">
+                                        <div class="col-sm-4 mt-2 mb-4">
+                                            <label class="form-label" for="date_start">Filtrar por área</label>
+                                            <select class="form-control" id="comp_select" name="comp_select">
+                                                <option selected>Listar todos</option>
+                                                <option value="1">Até 25%</option>
+                                                <option value="2">25% - 50%</option>
+                                                <option value="3">50% - 75%</option>
+                                                <option value="4">75% - 100%</option>
+                                            </select>
+
+                                        </div>
+                                        <div class="col-sm-2 mt-2 mb-4">
+                                            <label class="form-label" style="color: #ffffff;">.</label>
+                                            <input type="submit" class="btn btn-secondary form-control mt-"
+                                                value="Pesquisar" name="button" id="button" />
+                                        </div>
+                                        <div class="col-sm-6 mt-2 mb-4">
+
+                                        </div>
                                     </div>
-                                    <div class="col-sm-2 mt-2 mb-4">
-                                        <label class="form-label" style="color: #ffffff;">.</label>
-                                        <input type="submit" class="btn btn-secondary form-control mt-"
-                                        value="Pesquisar" name="button" id="button" />
-                                    </div>
-                                    <div class="col-sm-6 mt-2 mb-4">
-                                       
-                                    </div>
-                                </div>
                                 </form>
 
                                 <table class="table">
@@ -189,23 +194,20 @@
                                     <tbody>
                                         {% for post in posts %}
                                         <tr>
-                                            <form class="mx-1 mx-md-4" method="post"
-                                                            enctype="multipart/form-data">
-                                            
-                                            <input type="hidden" name="id" id="id"                                                       value="{{ post['id'] }}">
-                                            <td> <img class="img-fluid" src="/{{ post['image_path'] }}"
-                                                    alt=""></td>
-                                            <td> <img class="img-fluid"
-                                                    src="/{{ post['mask_path'] }}" alt=""></td>
-                                            <td>{{ post['proper_area'] }}%</td>
-                                            <td><input type="submit" class="btn btn-secondary btn-sm" value="Ver mais"
-                                                    name="button" id="button"></td>
-                                            <td><input type="submit" class="btn btn-secondary btn-sm"
-                                                    value="Deletar" name="button" id="button"
-                                                    onclick="return confirm('Excluir item?')" /></td>
-                                                </form>
-                                                </tr>
-                                            {% endfor %}
+                                            <form class="mx-1 mx-md-4" method="post" enctype="multipart/form-data">
+
+                                                <input type="hidden" name="id" id="id" value="{{ post['id'] }}">
+                                                <td> <img class="img-fluid" src="/{{ post['image_path'] }}" alt=""></td>
+                                                <td> <img class="img-fluid" src="/{{ post['mask_path'] }}" alt=""></td>
+                                                <td>{{ post['proper_area'] }}%</td>
+                                                <td><input type="submit" class="btn btn-secondary btn-sm"
+                                                        value="Ver mais" name="button" id="button"></td>
+                                                <td><input type="submit" class="btn btn-secondary btn-sm"
+                                                        value="Deletar" name="button" id="button"
+                                                        onclick="return confirm('Excluir item?')" /></td>
+                                            </form>
+                                        </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                                 <div class="container">
@@ -213,12 +215,12 @@
                                     {{ pagination.links }}
                                 </div>
                             </div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     {% else %}
     Você não está logado. <a href="/login">Fazer login.</a>.
@@ -226,5 +228,5 @@
 
     {% endblock %}
 </body>
-</html>
 
+</html>

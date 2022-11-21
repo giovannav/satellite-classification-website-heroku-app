@@ -13,6 +13,7 @@
             background-color: #ecead0;
             font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
         }
+
         .navbar {
             background-color: #ffffff;
             font-size: 20px;
@@ -23,7 +24,7 @@
             color: #282828;
         }
 
-        .img-fluid{
+        .img-fluid {
             height: 80px;
             width: 80px;
         }
@@ -33,27 +34,28 @@
 <body>
     <nav class="navbar navbar-expand-lg">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-          aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-          <div class="navbar-nav">
-            <a style="margin: 1%;">SIPH</a>
-            <img src="/static/icons/logo.png" alt="Icon vermelho com o desenho de uma alcachofra." style="width: 5%; height: 5%; margin: 1%; padding: 0;">
-            <a class="nav-item nav-link active" href="/login">Inicío<span class="sr-only">(current)</span></a>
-          </div>
+            <div class="navbar-nav">
+                <a style="margin: 1%;">SIPH</a>
+                <img src="/static/icons/logo.png" alt="Icon vermelho com o desenho de uma alcachofra."
+                    style="width: 5%; height: 5%; margin: 1%; padding: 0;">
+                <a class="nav-item nav-link active" href="/login">Inicío<span class="sr-only">(current)</span></a>
+            </div>
         </div>
-      </nav>
+    </nav>
     <div class="container mt-5 mb-5 align-items-center" style="width: 100%;">
         <div class="row">
             <div class="col-sm-4">
             </div>
             <div class="col-sm-4 align-items-center ">
-                <img src="/static/icons/logo.png" style="width: 25%; margin-left: 25%;" alt=""><br><br><h5>Sistema de Identificação para Hortas</h5>
+                <img src="/static/icons/logo.png" class="img-responsive center-block d-block mx-auto" style="width: 60px;" alt="Logo com fundo vermelho e o desenho de uma alcachofra em branco."><br>
+                <h5 class="text-center">Sistema de Identificação para Hortas</h5>
             </div>
             <div class="col-sm-4">
             </div>
-            
         </div>
     </div>
     <section>
@@ -67,23 +69,35 @@
                                     <p class="text-center h3 fw-bold mb-2 mx-1 mx-md-4 mt-4">Sobre</p>
 
                                     <p>
-                                        Este sistem foi desenvolvido baseado no ODS 2 que trata do combate à fome e agricultura sustentável. 
-                                        Mais informações sobre o ODS podem ser encotradas <a href="https://brasil.un.org/pt-br/sdgs/2">neste endereço.</a>
+                                        Este sistem foi desenvolvido baseado no ODS 2 que trata do combate à fome e
+                                        agricultura sustentável.
+                                        Mais informações sobre o ODS podem ser encotradas <a
+                                            href="https://brasil.un.org/pt-br/sdgs/2">neste endereço.</a>
                                     </p>
                                     <p>
-                                        O objetivo do sistema é utilizar imagens de satélite para encontrar locais próprios para a implantação de hortas urbanas.
-                                        Baseando-se, principalmente, <a href="https://repositorio.ufpb.br/jspui/bitstream/123456789/14025/1/Arquivototal.pdf">nesta dissertação</a> que 
-                                            analisa as hortas urbanas na cidade de João Pessoa (PB), levanta-se evidências de que a produção urbana de alimentos, principalmente aquelas
-                                            feitas próximas a locais de vulnerabilidade social, aumenta-se a segurança alimentar das pessoas que vivem próximas à hortas.        
+                                        O objetivo do sistema é utilizar imagens de satélite para encontrar locais
+                                        próprios para a implantação de hortas urbanas.
+                                        Baseando-se, principalmente, <a
+                                            href="https://repositorio.ufpb.br/jspui/bitstream/123456789/14025/1/Arquivototal.pdf">nesta
+                                            dissertação</a> que
+                                        analisa as hortas urbanas na cidade de João Pessoa (PB), levanta-se evidências
+                                        de que a produção urbana de alimentos, principalmente aquelas
+                                        feitas próximas a locais de vulnerabilidade social, aumenta-se a segurança
+                                        alimentar das pessoas que vivem próximas à hortas.
                                     </p>
                                     <p>
-                                        A tecnologia utiliza para a segmentação dos locais próprios para implantação das hortas foram redes neurais U-net a partir de datasets de domínio público.
-                                        Tem-se como público alvo pessoas/entidades que cuidem do planejamento urbano e da implementação de políticas públicas de abastecimento, como o SEMA em Piracicaba.
+                                        A tecnologia utiliza para a segmentação dos locais próprios para implantação das
+                                        hortas foram redes neurais U-net a partir de datasets de domínio público.
+                                        Tem-se como público alvo pessoas/entidades que cuidem do planejamento urbano e
+                                        da implementação de políticas públicas de abastecimento, como o SEMA em
+                                        Piracicaba.
                                     </p>
                                     <p>
-                                        Todo o sistema foi desenvolvido por Giovanna Valim Frederico para a disciplina de Projeto Integrado em Engenharia de Computação 1 (2022.2) e está disponível no <a href="">GitHub</a> para consulta pública.
+                                        Todo o sistema foi desenvolvido por Giovanna Valim Frederico para a disciplina
+                                        de Projeto Integrado em Engenharia de Computação 1 (2022.2) e está disponível no
+                                        <a href="">GitHub</a> para consulta pública.
                                     </p>
-                                    
+
                                     </form>
                                 </div>
                             </div>

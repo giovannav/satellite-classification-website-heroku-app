@@ -12,50 +12,50 @@
         let password = false;
 
         function ValidatePassword() {
-        const input = document.getElementById("new_password");
-        const text = document.getElementById("alert_password");
-        input.addEventListener('input', validPassword);
-        let regExpWeak = /[a-z]/;
-        let regExpMedium = /\d+/;
-        let regExpStrong = /.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/;
-        let min_week_password = 3;
-        let min_medium_password = 6;
-        let min_strong_password = 6;
-        function validPassword() {
-        let input_week = input.value.match(regExpWeak);
-        let input_medium = input.value.match(regExpMedium);
-        let input_strong = input.value.match(regExpStrong);
-        if (input.value) {
-            if (input.value.length <= min_week_password && (input_week || input_medium || input_strong)) {
-            text.textContent = "Senha fraca. Digite uma senha mais forte.";
-            }
-            if (input.value.length >= min_medium_password && ((input_week && input_medium) || (input_medium && input_strong) || (input_week && input_strong))) {
-            text.textContent = "Senha média. Digite uma senha mais forte.";
-            }
-            if (input.value.length >= min_strong_password && input_week && input_medium && input_strong) {
-            text.textContent = "Senha forte.";
-            password = true;
-            }
+            const input = document.getElementById("new_password");
+            const text = document.getElementById("alert_password");
+            input.addEventListener('input', validPassword);
+            let regExpWeak = /[a-z]/;
+            let regExpMedium = /\d+/;
+            let regExpStrong = /.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/;
+            let min_week_password = 3;
+            let min_medium_password = 6;
+            let min_strong_password = 6;
+            function validPassword() {
+                let input_week = input.value.match(regExpWeak);
+                let input_medium = input.value.match(regExpMedium);
+                let input_strong = input.value.match(regExpStrong);
+                if (input.value) {
+                    if (input.value.length <= min_week_password && (input_week || input_medium || input_strong)) {
+                        text.textContent = "Senha fraca. Digite uma senha mais forte.";
+                    }
+                    if (input.value.length >= min_medium_password && ((input_week && input_medium) || (input_medium && input_strong) || (input_week && input_strong))) {
+                        text.textContent = "Senha média. Digite uma senha mais forte.";
+                    }
+                    if (input.value.length >= min_strong_password && input_week && input_medium && input_strong) {
+                        text.textContent = "Senha forte.";
+                        password = true;
+                    }
+                }
             }
         }
-    }
 
-    function checkTerms(){
+        function checkTerms() {
             ValidateAll();
-    }
+        }
 
-    function ValidateAll() {
-        if (terms === true){
-            if (password === true) {
-                alert('Senha atualizada.');
-                }    
+        function ValidateAll() {
+            if (terms === true) {
+                if (password === true) {
+                    alert('Senha atualizada.');
+                }
             }
             else {
                 alert('Erro ao redefinir senha.');
                 document.getElementById("form1").reset();
                 location.reload();
+            }
         }
-    }
     </script>
     <style>
         body {
@@ -74,7 +74,8 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a style="margin: 1%;">SIPH</a>
-                <img src="/static/icons/logo.png" alt="Icon vermelho com o desenho de uma alcachofra." style="width: 5%; height: 5%; margin: 1%; padding: 0;">
+                <img src="/static/icons/logo.png" alt="Icon vermelho com o desenho de uma alcachofra."
+                    style="width: 5%; height: 5%; margin: 1%; padding: 0;">
                 <a class="nav-item nav-link active" href="/about">Sobre<span class="sr-only">(current)</span></a>
             </div>
         </div>
@@ -85,11 +86,12 @@
             <div class="col-sm-4">
             </div>
             <div class="col-sm-4 align-items-center ">
-                <img src="/static/icons/logo.png" class="img-fluid" style="width: 25%; margin-left: 25%;" alt=""><br><br><h5>Sistema de Identificação para Hortas</h5>
+                <img src="/static/icons/logo.png" class="img-responsive center-block d-block mx-auto" style="width: 60px;" alt="Logo com fundo vermelho e o desenho de uma alcachofra em branco."><br>
+                <h5 class="text-center">Sistema de Identificação para Hortas</h5>
             </div>
             <div class="col-sm-4">
             </div>
-            
+
         </div>
     </div>
     <section>
@@ -125,7 +127,7 @@
                                                 <p id="alert_password"></p>
                                             </div>
                                         </div>
-                                        
+
                                         {% with messages = get_flashed_messages() %}
                                         {% if messages %}
                                         <div class=flashes>
