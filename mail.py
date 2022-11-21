@@ -36,7 +36,7 @@ def send_mail(receiver, token):
         server = smtplib.SMTP('smtp.gmail.com:587')
         server.ehlo()
         server.starttls()
-        server.login(sender, 'nhsvkbflpzyksbvu')
+        server.login(sender, '#personal-info')
         server.sendmail(sender, recipients, msg)
         server.quit()
         print('Sent')
