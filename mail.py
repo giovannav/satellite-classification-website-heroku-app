@@ -26,7 +26,7 @@ def generate_page(token):
 
 def send_mail(receiver, token):
     
-    with open('static/files/credentials.json', 'r') as fcc_file:
+    with open('credentials.json', 'r') as fcc_file:
      credentials = json.load(fcc_file)
     
     recipients = list(receiver.split(','))
@@ -34,7 +34,7 @@ def send_mail(receiver, token):
     msg = MIMEMultipart()
     msg['From'] = sender
     msg['To'] = ',' .join(recipients)
-    msg['Subject'] = 'Recuperar minha senha: Sitema SIPH'
+    msg['Subject'] = 'Recuperar minha senha: Sistema SIPH'
     msg.attach(MIMEText(my_page, 'html'))
     msg = msg.as_string()
     try:
