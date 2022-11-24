@@ -131,11 +131,6 @@ def get_posts_filter_offset(id, query, offset=0, per_page=10):
     conn.close()
     return posts[offset: offset+per_page]
 
-
-@app.route("/")
-def home():
-    return redirect(url_for('login'))
-
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -167,6 +162,9 @@ def login():
                 flash('E-mail ou senha incorretos.')
     return render_template('login.html')
 
+@app.route("/")
+def home():
+    return redirect(url_for('login'))
 
 @app.route('/logout')
 def logout():
