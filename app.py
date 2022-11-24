@@ -328,7 +328,7 @@ def index(id):
                         file_name = str(file.filename)
                         extension = file_name.split('.')[-1]
 
-                        if (extension == 'tif' or extension == "tiff" or extension == 'TIF' or extension == "TIFF"):
+                        if (extension.lower() == 'tif' or extension.lower() == "tiff"):
                             image_path = "static/images/" + file.filename
                             file.save(image_path)
 
@@ -378,7 +378,7 @@ def index(id):
                                 file_name.split('.')[0]+".jpg"
                             im.save(image_path)
 
-                        elif (extension == 'jpeg' or extension == "jpg" or extension == "png" or extension == 'JPEG' or extension == "JPG" or extension == "PNG"):
+                        elif (extension.lower() == 'jpeg' or extension.lower() == "jpg" or extension.lower() == "png" or extension == 'JPEG' or extension == "JPG" or extension == "PNG"):
                             polygon = ''
                             area_m2 = ''
                             image_path = "static/images/" + file.filename
