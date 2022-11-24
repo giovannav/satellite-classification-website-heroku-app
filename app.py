@@ -286,6 +286,65 @@ def home2():
     session_id = session['id'][0]
     return redirect(url_for('index', id=session_id))
 
+@app.route("/predict/<id>", methods=('GET', 'POST'))
+def predict(id):
+    if request.method == 'GET':
+        itens = []
+        conn = get_db_connection()
+        images = conn.execute(
+            'SELECT * FROM image where id = (?)', [id]).fetchone()
+
+        if len(images['polygon']) > 0:
+            polygon = images['polygon']
+            polygon = polygon[2:-2]
+            polygon = list(eval(polygon))
+            res = [list(ele) for ele in polygon]
+            dict_coord = {'coord1': res[0][1], 'coord2': res[0][0]}
+        else:
+            res = ""
+            dict_coord = {'coord1': "", 'coord2': ""}
+
+        if len(str(images['area'])) > 0:
+            area_hectare = round(float(images['area']) / 10000, 2)
+            area_propria_hectare = round(
+                area_hectare * (float(images['proper_area']) / 100), 2)
+        else:
+            area_hectare = ""
+            area_propria_hectare = ""
+            classificacao = ""
+
+        if len(str(area_propria_hectare)) > 0:
+            if area_propria_hectare*10000 < 20:
+                classificacao = "Pequeno (menor que 20m²)"
+            elif area_propria_hectare*10000 >= 20 and area_propria_hectare*10000 < 50:
+                classificacao = "Médio (maior ou igual a 20m² e menor que 50m²)"
+            elif area_propria_hectare*10000 >= 50 and area_propria_hectare*10000 < 100:
+                classificacao = "Grande (maior ou igual a 50m² e menor que 100m²)"
+            elif area_propria_hectare*10000 > 100:
+                classificacao = "Muito grande (maior ou igual a 100m²)"
+            else:
+                classificacao = ""
+
+        date_upload = datetime.strptime(images['date_upload'], '%Y-%m-%d')
+
+        dict_imgs = {
+            "id": images['id'],
+            "image_name": images['image_name'],
+            "description": images['description'],
+            "image_path": images['image_path'],
+            "mask_path": images['mask_path'],
+            "result_path": images['result_path'],
+            "proper_area": images['proper_area'],
+            "date_upload": (str(date_upload.day) + "/" + str(date_upload.month) + "/" + str(date_upload.year)),
+            "polygon": dict_coord,
+            "area": images['area'],
+            "area_hectare": area_hectare,
+            "area_propria_hectare": area_propria_hectare,
+            "classificacao": classificacao,
+            "user_id": images['user_id']
+        }
+
+        return render_template('predict.html', posts=dict_imgs)
 
 @app.route("/index/<id>", methods=('GET', 'POST'))
 def index(id):
@@ -508,68 +567,6 @@ def index(id):
             return redirect(url_for('predict', id=0))
     else:
         return redirect(url_for('logout'))
-
-
-@app.route("/predict/<id>", methods=('GET', 'POST'))
-def predict(id):
-    if request.method == 'GET':
-        itens = []
-        conn = get_db_connection()
-        images = conn.execute(
-            'SELECT * FROM image where id = (?)', [id]).fetchone()
-
-        if len(images['polygon']) > 0:
-            polygon = images['polygon']
-            polygon = polygon[2:-2]
-            polygon = list(eval(polygon))
-            res = [list(ele) for ele in polygon]
-            dict_coord = {'coord1': res[0][1], 'coord2': res[0][0]}
-        else:
-            res = ""
-            dict_coord = {'coord1': "", 'coord2': ""}
-
-        if len(str(images['area'])) > 0:
-            area_hectare = round(float(images['area']) / 10000, 2)
-            area_propria_hectare = round(
-                area_hectare * (float(images['proper_area']) / 100), 2)
-        else:
-            area_hectare = ""
-            area_propria_hectare = ""
-            classificacao = ""
-
-        if len(str(area_propria_hectare)) > 0:
-            if area_propria_hectare*10000 < 20:
-                classificacao = "Pequeno (menor que 20m²)"
-            elif area_propria_hectare*10000 >= 20 and area_propria_hectare*10000 < 50:
-                classificacao = "Médio (maior ou igual a 20m² e menor que 50m²)"
-            elif area_propria_hectare*10000 >= 50 and area_propria_hectare*10000 < 100:
-                classificacao = "Grande (maior ou igual a 50m² e menor que 100m²)"
-            elif area_propria_hectare*10000 > 100:
-                classificacao = "Muito grande (maior ou igual a 100m²)"
-            else:
-                classificacao = ""
-
-        date_upload = datetime.strptime(images['date_upload'], '%Y-%m-%d')
-
-        dict_imgs = {
-            "id": images['id'],
-            "image_name": images['image_name'],
-            "description": images['description'],
-            "image_path": images['image_path'],
-            "mask_path": images['mask_path'],
-            "result_path": images['result_path'],
-            "proper_area": images['proper_area'],
-            "date_upload": (str(date_upload.day) + "/" + str(date_upload.month) + "/" + str(date_upload.year)),
-            "polygon": dict_coord,
-            "area": images['area'],
-            "area_hectare": area_hectare,
-            "area_propria_hectare": area_propria_hectare,
-            "classificacao": classificacao,
-            "user_id": images['user_id']
-        }
-
-        return render_template('predict.html', posts=dict_imgs)
-
 
 if __name__ == "__main__":
     port = os.environ.get("PORT", 5000)
