@@ -136,7 +136,6 @@ def get_posts_filter_offset(id, query, offset=0, per_page=10):
 def home():
     return redirect(url_for('login'))
 
-
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
